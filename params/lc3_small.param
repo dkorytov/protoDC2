@@ -1,0 +1,37 @@
+
+
+lc_loc    /media/luna1/dkorytov/data/AlphaQ/lc_gal_final/${var_name}.${step}.bin
+gltcs_loc NULL
+#shear_loc  /home/dkorytov/data/AlphaQ/lc_shear/${step}.cat
+shear_loc   /home/dkorytov/data/AlphaQ/lc_shear_final3/${step}_${nan_str_z}_${var_name}.bin
+gio_loc     /home/dkorytov/proj/core_tracking/quick_subhalo_view/output/batch3/gal_${step}b.gio
+gltcs_file_list /media/luna1/kovacs/galacticus/results/galacticus_outputs_v0.9.4/AlphaQv3LB_dust_ELG_linked/nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44/AlphaQv3LB_split_252/galacticus_AlphaQv3LB_split_252_nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44.hdf5 /media/luna1/kovacs/galacticus/results/galacticus_outputs_v0.9.4/AlphaQv3LB_dust_ELG_linked/nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44/AlphaQv3LB_151/galacticus_AlphaQv3LB_151_nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44.hdf5 /media/luna1/kovacs/galacticus/results/galacticus_outputs_v0.9.4/AlphaQv3LB_dust_ELG_linked/nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44/AlphaQv3LB_113/galacticus_AlphaQv3LB_113_nbody_AlphaQ_z1.1_BH_SDSS_LSST_BV_ELG_SEDval44.hdf5 
+use_gltcs_file_list true
+sod_loc    /media/luna1/dkorytov/data/AlphaQ/sod/m000-${step}.sodproperties
+halo_shape_loc /media/luna1/prlarsen/halo_shapes/m000-${step}.bighaloshapes
+halo_shape_red_loc /home/prlarsen/halo_shapes/m000-${step}.bighaloshapes_red
+lc_rot_info_loc  /home/prlarsen/rotations.hdf5
+
+auto_run true
+use_shear true
+
+gltcs_file_num 256
+gltcs_file_step 1
+gltcs_steps    487    475    464    453    442    432    421    411    401    392    382    373    365    355    347    338    331    323    315    307    300    293    286    279    272    266    259    253    247   
+gltcs_internal 31     30     29     28     27     26     25     24     23     22     21     20     19     18     17     16     15     14     13     12     11     10     9      8      7      6      5      4      3     
+gltcs_str_z    0.0245 0.0502 0.0749 0.1008 0.1279 0.1538 0.1837 0.2123 0.2423 0.2705 0.3035 0.3347 0.3636 0.4017 0.4337 0.4714 0.5022 0.5391 0.5777 0.6184 0.6557 0.6948 0.7358 0.7788 0.8240 0.8646 0.9143 0.9591 1.0060
+nan_str_z      0.012883 0.043016 0.063007 0.092599 0.109616 0.137126 0.167583 0.197314 0.220915 0.255037 0.283525 0.317080 0.349731 0.383357 0.413571 0.449458 0.484233 0.516544 0.551844 0.594717 0.633318 0.667911 0.711212 0.752245 0.797511 0.836996 0.884260 0.929488 0.976569 
+
+rnd_seed 1234567
+
+use_mr_cut true
+mr_cut -16
+box false
+output output/ANL_lc_v${version}.hdf5
+tmp_to_disk true
+tmp_file_loc tmp/${num}lc_full.hdf5
+
+
+version_major        2
+version_minor        1
+version_minor_minor  3

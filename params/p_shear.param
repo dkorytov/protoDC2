@@ -1,0 +1,26 @@
+
+
+lc_loc    /home/dkorytov/data/AlphaQ/lc_gals/${var_name}.${step}.bin
+gltcs_loc /home/dkorytov/data/AlphaQ/galaticus/galacticus_AlphaQv2_${subfile}_nbody_AlphaQ_z1.1_BH_SDSSugrizbJROval42.hdf5
+shear_loc    /home/dkorytov/data/AlphaQ/lc_shear/${step}.cat
+gio_loc   /home/dkorytov/proj/core_tracking/quick_subhalo_view/output/batch/gal_${step}b.gio
+
+use_shear true
+
+gltcs_file_num 256
+gltcs_file_step 16
+gltcs_steps    487    475    464    453    
+gltcs_internal 31     30     29     28     
+gltcs_str_z    0.0245 0.0502 0.0749 0.1008 
+
+use_mr_cut true
+mr_cut -16
+output output/mock_shear.hdf5
+tmp_to_disk true
+tmp_file_loc tmp/${num}.hdf5
+
+
+
+#gltcs_steps    487    475    464    453    442    432    421    411    401    392    382    373    365    355    347    338    331    323    315    307    300    293    286    279    272    266    259    253    247    241    235 
+#gltcs_internal 31     30     29     28     27     26     25     24     23     22     21     20     19     18     17     16     15     14     13     12     11     10     9      8      7      6      5      4      3      2      1   
+#gltcs_str_z    0.0245 0.0502 0.0749 0.1008 0.1279 0.1538 0.1837 0.2123 0.2423 0.2705 0.3035 0.3347 0.3636 0.4017 0.4337 0.4714 0.5022 0.5391 0.5777 0.6184 0.6557 0.6948 0.7358 0.7788 0.8240 0.8646 0.9143 0.9591 1.0060 1.0552 1.1069

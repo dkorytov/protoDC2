@@ -1,0 +1,14 @@
+
+
+lc_loc    /home/dkorytov/data/AlphaQ/lc_gals/${var_name}.${step}.bin
+shear_loc    /home/dkorytov/data/AlphaQ/lc_shear/${step}.cat
+gltcs_loc /home/dkorytov/data/AlphaQ/galaticus/galacticus_AlphaQv2_${subfile}_nbody_AlphaQ_z1.1_BH_SDSSugrizbJROval42.hdf5
+gio_loc   /home/dkorytov/proj/core_tracking/quick_subhalo_view/output/batch/gal_${step}b_pos.gio
+
+gltcs_file_num 256
+gltcs_steps    487    475    
+gltcs_internal 31     30     
+gltcs_str_z    0.0245 0.0502 
+
+output test_q.hdf5
+# deleted values 499 -> 32 -> 0.0000
