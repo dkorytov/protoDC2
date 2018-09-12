@@ -422,6 +422,7 @@ hfile.close()
 output_mod = output_final.replace('.hdf5','_mod.hdf5')
 if(output_final == output_mod):
     print "Can't have the source and modified file be the same!!"
+    exit()
     raise;
 
 
