@@ -56,7 +56,7 @@ if(output_final == output_mod):
     print "Can't have the source and modified file be the same!!"
     raise;
 print output_mod
-hfile = h5py.File(output_mod,'a')
+hfile = h5py.File(output_mod,'r+')
 
 #################################
 ### Zeroing out negative masses & their luminosities
@@ -119,12 +119,12 @@ for key in keys:
 lum_r_disk     = hfile['diskLuminositiesStellar:SDSS_r:rest'].value
 lum_r_spheroid = hfile['spheroidLuminositiesStellar:SDSS_r:rest'].value
 lum_r_tot = lum_r_disk+lum_r_spheroid
-ellip = hfile['diskEllipticity'].value*lum_r_disk/lum_r_tot + hfile['spheroidEllipticity'].value*lum_r_spheroid/lum_r_tot
-hfile['totalEllipticity']=ellip
-pos_angle = hfile['positionAngle'].value
-print "pos_angle",np.min(pos_angle),np.max(pos_angle)
-hfile['totalEllipticity1'] = ellip*np.cos(pos_angle*2.0)
-hfile['totalEllipticity2'] = ellip*np.sin(pos_angle*2.0)
+# ellip = hfile['diskEllipticity'].value*lum_r_disk/lum_r_tot + hfile['spheroidEllipticity'].value*lum_r_spheroid/lum_r_tot
+# hfile['totalEllipticity']=ellip
+# pos_angle = hfile['positionAngle'].value
+# print "pos_angle",np.min(pos_angle),np.max(pos_angle)
+# hfile['totalEllipticity1'] = ellip*np.cos(pos_angle*2.0)
+# hfile['totalEllipticity2'] = ellip*np.sin(pos_angle*2.0)
 
 print hfile.keys()
 mag_r = hfile['magnitude:SDSS_r:rest'].value
@@ -292,30 +292,30 @@ if not box:
     hfile.move('ra_lensed','ra')
     hfile.move('dec_lensed','dec')
 #rename position type
-position_type = hfile['placementType'].value
-slct_central = position_type == 5
-slct_core    = position_type == 2
-slct_infall  = position_type == 0
-slct_rnd     = position_type == 1
-slct_nfw     = position_type == 5
-slct_blank   = position_type == 3
-position_type[slct_central]=0
-position_type[slct_core]=1
-position_type[slct_infall]=2
-position_type[slct_rnd]=3
-position_type[slct_nfw]=4
-position_type[slct_blank]=5
-#TODO check position types
+# position_type = hfile['placementType'].value
+# slct_central = position_type == 5
+# slct_core    = position_type == 2
+# slct_infall  = position_type == 0
+# slct_rnd     = position_type == 1
+# slct_nfw     = position_type == 5
+# slct_blank   = position_type == 3
+# position_type[slct_central]=0
+# position_type[slct_core]=1
+# position_type[slct_infall]=2
+# position_type[slct_rnd]=3
+# position_type[slct_nfw]=4
+# position_type[slct_blank]=5
+# #TODO check position types
 
 #del hfile['placementType']
-hfile['placementType'][...]=position_type
+# hfile['placementType'][...]=position_type
 #TODO check that attrs stay the same
 
 
 #rename redshifts to have redshift & redshift_hubble
-del hfile['redshift']
-hfile.move('redshiftObserver','redshift')
-hfile.move('redshiftCosmological','redshiftHubble')
+# del hfile['redshift']
+# hfile.move('redshiftObserver','redshift')
+# hfile.move('redshiftCosmological','redshiftHubble')
 
 #change to degrees
 if not box:
@@ -323,11 +323,11 @@ if not box:
     hfile['dec_true'][...] = hfile['dec_true'].value/3600.0-2.5
     hfile['ra'][...] = hfile['ra'].value/3600.0
     hfile['dec'][...] = hfile['dec'].value/3600.0
-hfile['positionAngle'][...]=hfile['positionAngle'].value*180.0/np.pi
-hfile.move('diskRadius','diskScaleRadius')
-hfile.move('spheroidRadius','spheroidScaleRadius')
-hfile.move('diskRadiusArcsec','diskScaleRadiusArcsec')
-hfile.move('spheroidRadiusArcsec','spheroidScaleRadiusArcsec')
+# hfile['positionAngle'][...]=hfile['positionAngle'].value*180.0/np.pi
+# hfile.move('diskRadius','diskScaleRadius')
+# hfile.move('spheroidRadius','spheroidScaleRadius')
+# hfile.move('diskRadiusArcsec','diskScaleRadiusArcsec')
+# hfile.move('spheroidRadiusArcsec','spheroidScaleRadiusArcsec')
 
 print "done renaming"
 
