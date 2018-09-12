@@ -183,6 +183,7 @@ if not box:
         dfs.append(df)
 else: # a snapshot box simluation
     for step in gltcs_steps:
+        continue
         print "working on step: ", step
         # pos_dict = {}
         # pos_dict['x'] = dtk.gio_read(gio_loc.replace('${step}',str(step)),'x')
@@ -195,7 +196,9 @@ else: # a snapshot box simluation
         # pos_dict['step'] = np.ones(pos_dict['nodeIndex'].size,dtype=int)*step
         # pos_dict['redshift'] = np.ones(pos_dict['nodeIndex'].size)*stepz.get_z(step)
         # df1 = pd.DataFrame(pos_dict)
+        #####################
         gio_df = pd.DataFrame(load_gio(gio_loc,step,box=True))
+        ####################
         # df = pd.merge(df1,gio_df,on=['nodeIndex','step'])
         # dfs.append(df)
         dfs.append(gio_df)
@@ -203,11 +206,11 @@ else: # a snapshot box simluation
 print "\t done. ",time.time()-start
 total_end = time.time()
 print "done loading LC", total_end - total_start
-pos_df = pd.concat(dfs,ignore_index=True)
+#pos_df = pd.concat(dfs,ignore_index=True)
 print "done making pd dataframe",time.time() -total_end
-print "\t", pos_df.keys()
-print pos_df.head()
-print pos_df.shape
+# print "\t", pos_df.keys()
+# print pos_df.head()
+# print pos_df.shape
 
 gal_cat = dtk.Catalog(gltcs_loc)
 gal_cat.add_steps(gltcs_steps,in_file_steps=gltcs_internal)
@@ -219,8 +222,8 @@ keys = []
 
 #don't copy these table that have these words
 avoids = ["AngularMomentum","hotHalo","basic","blackHoleCount","blackHoleJetPower","blackHoleRadiativeEfficiency","blackHoleSpin","darkMatterProfileScale","indicesBranchTip","position","satellite","siblingIndex","merge","merging","Gas"]
-if box: # the snapshot box has less data columns than the lightcone because
-    avoids += ["SED","Dust","dust","age","black","Continuum","Line","Metal","total"]
+# if box: # the snapshot box has less data columns than the lightcone because
+#     avoids += ["SED","Dust","dust","age","black","Continuum","Line","Metal","total"]
 print "box: ", box
 print avoids
 for key in keys_tmp:
@@ -249,7 +252,7 @@ for i in range(0,len(gltcs_file_list)):
         #print "time: ",(time.time()-start)
         continue
     print "\n\n\n=============================================="
-    print "working on files: ",i
+    print "working on files: ",i,'/',len(gltcs_file_list)
     print "=============================================="
     print current_file_list
     gal_cat.set_explicit_files(current_file_list)
@@ -263,10 +266,13 @@ for i in range(0,len(gltcs_file_list)):
         for key in gal_cat[step].keys():
             gal_dic[key] = gal_cat[step][key]
         gal_dic["step"]=np.ones(gal_dic[gal_dic.keys()[0]].size,dtype='i4')*step
+        #TODO  Have it zip accorss step and redshfit from param file. 
+        gal_dic["redshift"] = np.ones(gal_dic[gal_dic.keys()[0]].size,dtype='f4')*param.get_float("gltcs_str_z")
+        
         dfs.append(pd.DataFrame(gal_dic))
 
     gal_df = pd.concat(dfs,ignore_index=True)
-    gal_df = pd.merge(pos_df,gal_df,on=["step","nodeIndex"])
+    #gal_df = pd.merge(pos_df,gal_df,on=["step","nodeIndex"])
 
   
     if(tmp_to_disk):
