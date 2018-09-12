@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+./match_up3.py params/gltcs_low_z/#step#.param
