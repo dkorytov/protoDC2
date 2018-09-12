@@ -43,9 +43,10 @@ use_mr_cut         = param.get_bool("use_mr_cut")
 mr_cut             = param.get_float("mr_cut")
 auto_run           = param.get_bool("auto_run")
 rnd_seed           = param.get_int("rnd_seed")
+library            = param.get_bool("library")
 seed(rnd_seed)
 output_final = myutil.get_output_loc(param)
-print output_final
+print "Output final: ", output_final
 hfile = h5py.File(output_final,'a')
 hfile.attrs['H_0']=71.0
 hfile.attrs['Omega_DE']=0.7352
@@ -130,7 +131,8 @@ sersic_half_scale_ratio_15 = sersic_half_scale_ratio(1.5)
 sersic_half_scale_ratio_35 = sersic_half_scale_ratio(3.5)
 
 hernquist_half_scale_ratio = 1.8153
-size = hfile['redshift'].size
+
+size = hfile['blackHoleMass'].size
 
 # slct_blue = hfile['magnitude:SDSS_u:observed'].values-hfile['magnitude:SDSS_g:observed'].values<1.36
 # slct_red  = slct_blue==0
@@ -201,92 +203,94 @@ try:
     delhfile( hfile,'hostHaloSODMass')
 except KeyError:
     print("can't delete them all...could be fine, this is just a overwrite work around2")
-hfile['positionAngle']=np.array(np.pi*rand(size))
-hfile['spheroidSersicIndex']=4*np.ones(hfile['redshift'].value.size)
-hfile['diskSersicIndex']=1.0*np.ones(hfile['redshift'].value.size)
-data = hfile['spheroidRadius'].value*hernquist_half_scale_ratio
-hfile['spheroidHalfLightRadius']=data
-hfile['diskHalfLightRadius'] = hfile['diskRadius'].value*sersic_half_scale_ratio_10
-#gal_mpc_to_arcsec = 1.0/mpc_arcsec(hfile['redshift'].value)
-gal_mpc_to_arcsec = arcsec_per_mpc(hfile['redshift'].value)
-hfile['spheroidRadiusArcsec']=hfile['spheroidRadius'].value*gal_mpc_to_arcsec
-hfile['spheroidHalfLightRadiusArcsec']=hfile['spheroidHalfLightRadius'].value*gal_mpc_to_arcsec
-hfile['diskRadiusArcsec']=hfile['diskRadius'].value*gal_mpc_to_arcsec
-hfile['diskHalfLightRadiusArcsec']=hfile['diskRadius'].value*gal_mpc_to_arcsec
-q = 0.7+rand(size)*(0.95-0.7)
-q = dtk.clipped_gaussian(0.8, 0.2, size, max_val = 1.0, min_val=0.0)
-hfile['spheroidAxisRatio'] = q
-hfile['spheroidMajorAxisArcsec'] = hfile['spheroidHalfLightRadiusArcsec'].value
-hfile['spheroidMinorAxisArcsec'] = hfile['spheroidHalfLightRadiusArcsec'].value*q
-hfile['spheroidEllipticity'] = (1.0-q)/(1.0+q)
-hfile['spheroidEllipticity1'] = np.cos(2.0*hfile['positionAngle'].value)*hfile['spheroidEllipticity'].value
-hfile['spheroidEllipticity2'] = np.sin(2.0*hfile['positionAngle'].value)*hfile['spheroidEllipticity'].value
+# hfile['positionAngle']=np.array(np.pi*rand(size))
+# hfile['spheroidSersicIndex']=4*np.ones(hfile['redshift'].value.size)
+# hfile['diskSersicIndex']=1.0*np.ones(hfile['redshift'].value.size)
+# data = hfile['spheroidRadius'].value*hernquist_half_scale_ratio
+# hfile['spheroidHalfLightRadius']=data
+# hfile['diskHalfLightRadius'] = hfile['diskRadius'].value*sersic_half_scale_ratio_10
+# #gal_mpc_to_arcsec = 1.0/mpc_arcsec(hfile['redshift'].value)
+# gal_mpc_to_arcsec = arcsec_per_mpc(hfile['redshift'].value)
+# hfile['spheroidRadiusArcsec']=hfile['spheroidRadius'].value*gal_mpc_to_arcsec
+# hfile['spheroidHalfLightRadiusArcsec']=hfile['spheroidHalfLightRadius'].value*gal_mpc_to_arcsec
+# hfile['diskRadiusArcsec']=hfile['diskRadius'].value*gal_mpc_to_arcsec
+# hfile['diskHalfLightRadiusArcsec']=hfile['diskRadius'].value*gal_mpc_to_arcsec
+# q = 0.7+rand(size)*(0.95-0.7)
+# #q = dtk.clipped_gaussian(0.8, 0.2, size, max_val = 1.0, min_val=0.0)
+# hfile['spheroidAxisRatio'] = q
+# hfile['spheroidMajorAxisArcsec'] = hfile['spheroidHalfLightRadiusArcsec'].value
+# hfile['spheroidMinorAxisArcsec'] = hfile['spheroidHalfLightRadiusArcsec'].value*q
+# hfile['spheroidEllipticity'] = (1.0-q)/(1.0+q)
+# hfile['spheroidEllipticity1'] = np.cos(2.0*hfile['positionAngle'].value)*hfile['spheroidEllipticity'].value
+# hfile['spheroidEllipticity2'] = np.sin(2.0*hfile['positionAngle'].value)*hfile['spheroidEllipticity'].value
 #theta = np.arccos(1-2*rand(size))
 print "Thetas"
 print hfile['inclination'].value
-theta = hfile['inclination'].value*np.pi/180.0
-dist,lim = dtk.make_distribution(-theta)
-resamp = dtk.resample_distribution(dist,gal_zoo_dist,lim,[0.0,1.0])
+# theta = hfile['inclination'].value*np.pi/180.0
+# dist,lim = dtk.make_distribution(-theta)
+# resamp = dtk.resample_distribution(dist,gal_zoo_dist,lim,[0.0,1.0])
 
-tilt = resamp(-theta)
-print "title: ",np.min(tilt),np.max(tilt)
+tilt = hfile['inclination'].value
+# print "title: ",np.min(tilt),np.max(tilt)
 #tilt = np.sqrt(np.cos(theta)**2+0.01*np.sin(theta)**2)
-major = hfile['diskHalfLightRadiusArcsec']
-minor = hfile['diskHalfLightRadiusArcsec']*tilt
+# major = hfile['diskHalfLightRadiusArcsec']
+# minor = hfile['diskHalfLightRadiusArcsec']*tilt
 #make sure that major is infact larger
 # swap_slct = minor>major
 # tmp = minor[swap_slct]
 # minor[swap_slct]=major[swap_slct]
 # major[swap_slct]=tmp
 print hfile.keys()
-hfile['diskMinorAxisArcsec'] = minor
-hfile['diskMajorAxisArcsec'] = major
-q = minor/major
-hfile['diskAxisRatio']=q
-hfile['diskEllipticity']=(1.0-q)/(1.0+q)
-hfile['diskEllipticity1'] = np.cos(2.0*hfile['positionAngle'].value)*hfile['diskEllipticity'].value
-hfile['diskEllipticity2'] = np.sin(2.0*hfile['positionAngle'].value)*hfile['diskEllipticity'].value
+# hfile['diskMinorAxisArcsec'] = minor
+# hfile['diskMajorAxisArcsec'] = major
+# q = minor/major
+# hfile['diskAxisRatio']=q
+# hfile['diskEllipticity']=(1.0-q)/(1.0+q)
+# hfile['diskEllipticity1'] = np.cos(2.0*hfile['positionAngle'].value)*hfile['diskEllipticity'].value
+# hfile['diskEllipticity2'] = np.sin(2.0*hfile['positionAngle'].value)*hfile['diskEllipticity'].value
 
 
 #################################
 ### Getting additional host halo info
 #################################
 steps = hfile['step'].value
-htag = hfile['hostHaloTag'].value
-htag_real = dtk.frag_to_real(htag)
-so_mass = np.zeros_like(steps,dtype='float')
-halo_eg1 = np.zeros_like(steps,dtype='float')
-halo_eg2 = np.zeros_like(steps,dtype='float')
-halo_eg3 = np.zeros_like(steps,dtype='float')
-halo_eg1_x = np.zeros_like(steps,dtype='float')
-halo_eg1_y = np.zeros_like(steps,dtype='float')
-halo_eg1_z = np.zeros_like(steps,dtype='float')
-halo_eg2_x = np.zeros_like(steps,dtype='float')
-halo_eg2_y = np.zeros_like(steps,dtype='float')
-halo_eg2_z = np.zeros_like(steps,dtype='float')
-halo_eg3_x = np.zeros_like(steps,dtype='float')
-halo_eg3_y = np.zeros_like(steps,dtype='float')
-halo_eg3_z = np.zeros_like(steps,dtype='float')
+# htag = hfile['hostHaloTag'].value
+# htag_real = dtk.frag_to_real(htag)
+# so_mass = np.zeros_like(steps,dtype='float')
+# halo_eg1 = np.zeros_like(steps,dtype='float')
+# halo_eg2 = np.zeros_like(steps,dtype='float')
+# halo_eg3 = np.zeros_like(steps,dtype='float')
+# halo_eg1_x = np.zeros_like(steps,dtype='float')
+# halo_eg1_y = np.zeros_like(steps,dtype='float')
+# halo_eg1_z = np.zeros_like(steps,dtype='float')
+# halo_eg2_x = np.zeros_like(steps,dtype='float')
+# halo_eg2_y = np.zeros_like(steps,dtype='float')
+# halo_eg2_z = np.zeros_like(steps,dtype='float')
+# halo_eg3_x = np.zeros_like(steps,dtype='float')
+# halo_eg3_y = np.zeros_like(steps,dtype='float')
+# halo_eg3_z = np.zeros_like(steps,dtype='float')
 
-#reduced eigen shapes
-halo_egr1 = np.zeros_like(steps,dtype='float')
-halo_egr2 = np.zeros_like(steps,dtype='float')
-halo_egr3 = np.zeros_like(steps,dtype='float')
-halo_egr1_x = np.zeros_like(steps,dtype='float')
-halo_egr1_y = np.zeros_like(steps,dtype='float')
-halo_egr1_z = np.zeros_like(steps,dtype='float')
-halo_egr2_x = np.zeros_like(steps,dtype='float')
-halo_egr2_y = np.zeros_like(steps,dtype='float')
-halo_egr2_z = np.zeros_like(steps,dtype='float')
-halo_egr3_x = np.zeros_like(steps,dtype='float')
-halo_egr3_y = np.zeros_like(steps,dtype='float')
-halo_egr3_z = np.zeros_like(steps,dtype='float')
+# #reduced eigen shapes
+# halo_egr1 = np.zeros_like(steps,dtype='float')
+# halo_egr2 = np.zeros_like(steps,dtype='float')
+# halo_egr3 = np.zeros_like(steps,dtype='float')
+# halo_egr1_x = np.zeros_like(steps,dtype='float')
+# halo_egr1_y = np.zeros_like(steps,dtype='float')
+# halo_egr1_z = np.zeros_like(steps,dtype='float')
+# halo_egr2_x = np.zeros_like(steps,dtype='float')
+# halo_egr2_y = np.zeros_like(steps,dtype='float')
+# halo_egr2_z = np.zeros_like(steps,dtype='float')
+# halo_egr3_x = np.zeros_like(steps,dtype='float')
+# halo_egr3_y = np.zeros_like(steps,dtype='float')
+# halo_egr3_z = np.zeros_like(steps,dtype='float')
 
 print steps
 steps_unique = np.unique(steps)
 print "loading in halo shapes and extra halo info"
 
 for step in steps_unique:
+    if library:
+        continue
     print "working on step: ", step
     slct_step = steps == step
     print step,sod_loc
@@ -370,35 +374,35 @@ for step in steps_unique:
     halo_egr3_y[slct] = eg_cat_eg3_y[indx[slct_indx]]
     halo_egr3_z[slct] = eg_cat_eg3_z[indx[slct_indx]]
 
+if not library:
+    hfile['hostHaloSODTag'] = htag_real
+    hfile['hostHaloSODMass'] = so_mass
 
-hfile['hostHaloSODTag'] = htag_real
-hfile['hostHaloSODMass'] = so_mass
-
-hfile['hostHaloEigenValue1']=halo_eg1
-hfile['hostHaloEigenValue2']=halo_eg2
-hfile['hostHaloEigenValue3']=halo_eg3
-hfile['hostHaloEigenVector1X']=halo_eg1_x
-hfile['hostHaloEigenVector1Y']=halo_eg1_y
-hfile['hostHaloEigenVector1Z']=halo_eg1_z
-hfile['hostHaloEigenVector2X']=halo_eg2_x
-hfile['hostHaloEigenVector2Y']=halo_eg2_y
-hfile['hostHaloEigenVector2Z']=halo_eg2_z
-hfile['hostHaloEigenVector3X']=halo_eg3_x
-hfile['hostHaloEigenVector3Y']=halo_eg3_y
-hfile['hostHaloEigenVector3Z']=halo_eg3_z
-
-hfile['hostHaloEigenValueReduced1']=halo_eg1
-hfile['hostHaloEigenValueReduced2']=halo_eg2
-hfile['hostHaloEigenValueReduced3']=halo_eg3
-hfile['hostHaloEigenVectorReduced1X']=halo_eg1_x
-hfile['hostHaloEigenVectorReduced1Y']=halo_eg1_y
-hfile['hostHaloEigenVectorReduced1Z']=halo_eg1_z
-hfile['hostHaloEigenVectorReduced2X']=halo_eg2_x
-hfile['hostHaloEigenVectorReduced2Y']=halo_eg2_y
-hfile['hostHaloEigenVectorReduced2Z']=halo_eg2_z
-hfile['hostHaloEigenVectorReduced3X']=halo_eg3_x
-hfile['hostHaloEigenVectorReduced3Y']=halo_eg3_y
-hfile['hostHaloEigenVectorReduced3Z']=halo_eg3_z
+    hfile['hostHaloEigenValue1']=halo_eg1
+    hfile['hostHaloEigenValue2']=halo_eg2
+    hfile['hostHaloEigenValue3']=halo_eg3
+    hfile['hostHaloEigenVector1X']=halo_eg1_x
+    hfile['hostHaloEigenVector1Y']=halo_eg1_y
+    hfile['hostHaloEigenVector1Z']=halo_eg1_z
+    hfile['hostHaloEigenVector2X']=halo_eg2_x
+    hfile['hostHaloEigenVector2Y']=halo_eg2_y
+    hfile['hostHaloEigenVector2Z']=halo_eg2_z
+    hfile['hostHaloEigenVector3X']=halo_eg3_x
+    hfile['hostHaloEigenVector3Y']=halo_eg3_y
+    hfile['hostHaloEigenVector3Z']=halo_eg3_z
+    
+    hfile['hostHaloEigenValueReduced1']=halo_eg1
+    hfile['hostHaloEigenValueReduced2']=halo_eg2
+    hfile['hostHaloEigenValueReduced3']=halo_eg3
+    hfile['hostHaloEigenVectorReduced1X']=halo_eg1_x
+    hfile['hostHaloEigenVectorReduced1Y']=halo_eg1_y
+    hfile['hostHaloEigenVectorReduced1Z']=halo_eg1_z
+    hfile['hostHaloEigenVectorReduced2X']=halo_eg2_x
+    hfile['hostHaloEigenVectorReduced2Y']=halo_eg2_y
+    hfile['hostHaloEigenVectorReduced2Z']=halo_eg2_z
+    hfile['hostHaloEigenVectorReduced3X']=halo_eg3_x
+    hfile['hostHaloEigenVectorReduced3Y']=halo_eg3_y
+    hfile['hostHaloEigenVectorReduced3Z']=halo_eg3_z
 
 
 # 'correcting spelling mistakes..'
@@ -458,7 +462,7 @@ for i,key in enumerate(hfile_input.keys()):
     hfile_input.flush()
 print "done"
 print "skipped: ",skip_cnt
-
+hfile_mod.close()
 if auto_run:
     print "auto running!!"
     import subprocess 
