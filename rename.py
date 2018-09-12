@@ -44,7 +44,7 @@ lc_rot_info_loc = param.get_string('lc_rot_info_loc')
 box = param.get_bool('box')
 
 stepz = dtk.StepZ(200,0,500)
-zs = np.linspace(0,1.5,1000)
+zs = np.linspace(0,3.5,1000)
 z_to_dl = interp1d(zs,cosmo.luminosity_distance(zs))
 
 #z_to_cd = interp1d(zs,cosmoAQ.comoving_distance(zs))
